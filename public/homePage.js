@@ -8,15 +8,17 @@ ApiConnector.current((response) => {
 });
 
 const ratesBoard = new RatesBoard(); 
-ApiConnector.getStocks((response) => {
-  if (response.success) {
-    ratesBoard.fillTable(response.data);
-    setInterval(() => {
+function updateRates() {
+  ApiConnector.getStocks((response) => {
+    if (response.success) {
       ratesBoard.clearTable();
       ratesBoard.fillTable(response.data);
-    }, 60000);
-  }
-});
+    }
+  });
+}
+
+updateRates();
+setInterval(updateRates, 60000);
 
 const moneyManager = new MoneyManager();
 moneyManager.addMoneyCallback = (data) => {
@@ -67,9 +69,9 @@ favoritesWidget.addUserCallback = (data) => {
       favoritesWidget.clearTable();
       favoritesWidget.fillTable(response.data);
       moneyManager.updateUsersList(response.data);
-      moneyManager.setMessage(true, "Пользователь добавлен");
+      favoritesWidget.setMessage(true, "Пользователь добавлен");
     } else {
-      moneyManager.setMessage(false, response.error);
+      favoritesWidget.setMessage(false, response.error);
     }
   });
 };
@@ -80,9 +82,9 @@ favoritesWidget.removeUserCallback = (data) => {
       favoritesWidget.clearTable();
       favoritesWidget.fillTable(response.data);
       moneyManager.updateUsersList(response.data);
-      moneyManager.setMessage(true, "Пользователь удален");
+      favoritesWidget.setMessage(true, "Пользователь удален");
     } else {
-      moneyManager.setMessage(false, response.error);
+      favoritesWidget.setMessage(false, response.error);
     }
   });
 };
